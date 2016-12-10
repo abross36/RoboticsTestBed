@@ -20,99 +20,75 @@ Developed with ROB-9457
 
 Motor::Motor(int In1pin, int In2pin, int PWMpin, int offset, int STBYpin)
 {
-  In1 = In1pin;
-  In2 = In2pin;
-  PWM = PWMpin;
-  Standby = STBYpin;
-  Offset = offset;
-  
-  pinMode(In1, OUTPUT);
-  pinMode(In2, OUTPUT);
-  pinMode(PWM, OUTPUT);
-  pinMode(Standby, OUTPUT);
+	In1 = In1pin;
+	In2 = In2pin;
+	PWM = PWMpin;
+	Standby = STBYpin;
+	Offset = offset;
+
+	pinMode(In1, OUTPUT);
+	pinMode(In2, OUTPUT);
+	pinMode(PWM, OUTPUT);
+	pinMode(Standby, OUTPUT);
 }
 
 void Motor::drive(int speed)
 {
-  digitalWrite(Standby, HIGH);
-  speed = speed * Offset;
-  if (speed>=0) fwd(speed);
-  else rev(-speed);
+	digitalWrite(Standby, HIGH);
+	speed = speed * Offset;
+	if (speed>=0) fwd(speed);
+	else rev(-speed);
 }
 void Motor::drive(int speed, int duration)
 {
-  drive(speed);
-  delay(duration);
+	drive(speed);
+	delay(duration);
 }
 
 void Motor::fwd(int speed)
 {
-   digitalWrite(In1, HIGH);
-   digitalWrite(In2, LOW);
-   analogWrite(PWM, speed);
-
+	digitalWrite(In1, HIGH);
+	digitalWrite(In2, LOW);
+	analogWrite(PWM, speed);
 }
 
 void Motor::rev(int speed)
 {
-   digitalWrite(In1, LOW);
-   digitalWrite(In2, HIGH);
-   analogWrite(PWM, speed);
+	digitalWrite(In1, LOW);
+	digitalWrite(In2, HIGH);
+	analogWrite(PWM, speed);
 }
 
 void Motor::brake()
 {
-   digitalWrite(In1, HIGH);
-   digitalWrite(In2, HIGH);
-   analogWrite(PWM,0);
+	digitalWrite(In1, HIGH);
+	digitalWrite(In2, HIGH);
+	analogWrite(PWM,0);
 }
 
+// used to disable any output to motor
 void Motor::standby()
 {
-   digitalWrite(Standby, LOW);
+	digitalWrite(Standby, LOW);
 }
 
-void forward(Motor motor1, Motor motor2, int speed)
+void forward(Motor motor, int speed)
 {
 	motor1.drive(speed);
-	motor2.drive(speed);
-}
-void forward(Motor motor1, Motor motor2)
-{
-	motor1.drive(DEFAULTSPEED);
-	motor2.drive(DEFAULTSPEED);
 }
 
-
-void back(Motor motor1, Motor motor2, int speed)
+void back(Motor motor, int speed)
 {
 	int temp = abs(speed);
 	motor1.drive(-temp);
-	motor2.drive(-temp);
-}
-void back(Motor motor1, Motor motor2)
-{
-	motor1.drive(-DEFAULTSPEED);
-	motor2.drive(-DEFAULTSPEED);
-}
-void left(Motor left, Motor right, int speed)
-{
-	int temp = abs(speed)/2;
-	left.drive(-temp);
-	right.drive(temp);
-	
 }
 
-
-void right(Motor left, Motor right, int speed)
+void back(Motor motor)
 {
-	int temp = abs(speed)/2;
-	left.drive(temp);
-	right.drive(-temp);
-	
+	motor.drive(-DEFAULTSPEED);
 }
-void brake(Motor motor1, Motor motor2)
+
+void brake(Motor motor)
 {
-	motor1.brake();
-	motor2.brake();
+	motor.brake();
 }
